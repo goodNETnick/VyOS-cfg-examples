@@ -64,12 +64,11 @@ set protocols bgp 65000 address-family ipv4-unicast network 172.24.24.0/24
 set protocols bgp 65000 neighbor 10.1.0.2 address-family ipv4-unicast nexthop-self
 set protocols bgp 65000 neighbor 10.1.0.2 remote-as '65000'
 set protocols bgp 65000 address-family ipv6-unicast network 2001:333::/64
-
+set protocols bgp 65000 neighbor 10.1.0.2 address-family ipv6-unicast
 
 # VyOS-R222
 set protocols bgp 65000 address-family ipv4-unicast network 172.22.22.0/24
 set protocols bgp 65000 neighbor 10.1.0.1 address-family ipv4-unicast nexthop-self
 set protocols bgp 65000 neighbor 10.1.0.1 remote-as '65000'
 set protocols bgp 65000 address-family ipv6-unicast network 2001:222::/64
-
-
+set protocols bgp 65000 neighbor 10.1.0.1 address-family ipv6-unicast
