@@ -1,0 +1,14 @@
+## Interfaces for routers VyOS-R222 & VyOS-R333
+
+#####
+set system host-name 'VyOS-R222'
+set interfaces dummy dum2 address '172.22.22.22/24'
+set interfaces dummy dum2 address '2001:222::222/64'
+set interfaces ethernet eth0 address '172.22.222.222/24'
+
+#####
+set system host-name 'VyOS-R333'
+set interfaces dummy dum3 address '172.24.24.24/24'
+set interfaces dummy dum3 address '2001:333::333/64'
+set interfaces ethernet eth0 address '172.24.233.233/24'
+
