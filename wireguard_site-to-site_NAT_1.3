@@ -4,8 +4,32 @@
 
 #   Wireguard example Site-to-site VyOS-R333 behind NAT, VyOS-R222 with public IP (172.22.222.222):
 # 10.1.0.0/30 &&  2001:23::/64- wireguard link between VyOS-R333 and VyOS-R222
-# 172.22.22.0/24 && 2001:333::/64 - LAN on VyOS-R333 (dum3 interface)
 # 172.24.24.0/24 && 2001:222::/64 - LAN on VyOS-R222 (dum2 interface)
+# 172.22.22.0/24 && 2001:333::/64 - LAN on VyOS-R333 (dum3 interface)
+
+############################################
+# VyOS-R222 (Public IP: 172.22.222.222)
+
+# First. Generate keypair & copy public key:
+vyos@VyOS-R333:~$ generate wireguard default-keypair
+vyos@VyOS-R333:~$ show wireguard keypairs pubkey default
+x1PNLX7xgqtVcRx5Iq8RQBcRIktX6ZnK1nv84Ornlls=
+
+# Create wg interface with addresses:
+set interfaces wireguard wg01 address '10.1.0.2/30'
+set interfaces wireguard wg01 address '2001:23::2/64'
+set interfaces wireguard wg01 description 'VPN-to-wg333'
+# Create wireguard config:
+set interfaces wireguard wg01 peer to-wg333 allowed-ips '172.24.24.0/24'
+set interfaces wireguard wg01 peer to-wg333 allowed-ips '10.1.0.0/30'
+set interfaces wireguard wg01 peer to-wg333 allowed-ips '2001:23::/64'
+set interfaces wireguard wg01 peer to-wg333 allowed-ips '2001:333::/64'
+set interfaces wireguard wg01 peer to-wg333 pubkey 'PfsgJyFxikSG/nl+sJYIYBl1xK0ejS1CpUFyBsxtJFM='
+set interfaces wireguard wg01 port '51820'
+# Set remote site static routes via wg:
+set protocols static route 172.24.24.0/24 next-hop 10.1.0.1 next-hop-interface wg01
+set protocols static route6 2001:333::/64 next-hop 2001:23::3 interface wg01
+
 
 ############################################
 # VyOS-R333 (Behind NAT)
@@ -31,30 +55,6 @@ set interfaces wireguard wg01 port '51820'
 # Set remote site static routes via wg:
 set protocols static route 172.22.22.0/24 next-hop 10.1.0.2 next-hop-interface wg01
 set protocols static route6 2001:222::/64 next-hop 2001:23::2 interface wg01
-
-
-############################################
-# VyOS-R222 (Public IP: 172.22.222.222)
-
-# First. Generate keypair & copy public key:
-vyos@VyOS-R333:~$ generate wireguard default-keypair
-vyos@VyOS-R333:~$ show wireguard keypairs pubkey default
-x1PNLX7xgqtVcRx5Iq8RQBcRIktX6ZnK1nv84Ornlls=
-
-# Create wg interface with addresses:
-set interfaces wireguard wg01 address '10.1.0.2/30'
-set interfaces wireguard wg01 address '2001:23::2/64'
-set interfaces wireguard wg01 description 'VPN-to-wg333'
-# Create wireguard config:
-set interfaces wireguard wg01 peer to-wg333 allowed-ips '172.24.24.0/24'
-set interfaces wireguard wg01 peer to-wg333 allowed-ips '10.1.0.0/30'
-set interfaces wireguard wg01 peer to-wg333 allowed-ips '2001:23::/64'
-set interfaces wireguard wg01 peer to-wg333 allowed-ips '2001:333::/64'
-set interfaces wireguard wg01 peer to-wg333 pubkey 'PfsgJyFxikSG/nl+sJYIYBl1xK0ejS1CpUFyBsxtJFM='
-set interfaces wireguard wg01 port '51820'
-# Set remote site static routes via wg:
-set protocols static route 172.24.24.0/24 next-hop 10.1.0.1 next-hop-interface wg01
-set protocols static route6 2001:333::/64 next-hop 2001:23::3 interface wg01
 
 
 ############################################
