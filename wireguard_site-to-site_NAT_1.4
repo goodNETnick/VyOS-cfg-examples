@@ -8,6 +8,34 @@
 # 172.24.24.0/24 && 2001:222::/64 - LAN on VyOS-R222 (dum2 interface)
 
 ############################################
+# VyOS-R222 (Public IP: 172.22.222.222)
+
+# First. Generate keypair & copy public key (CONCIG mode):
+vyos@VyOS-R222# run generate pki wireguard key-pair install interface wg01
+"generate" CLI command executed from config session.
+Generated private-key was imported to CLI!
+Use the following command to verify: show interfaces wireguard wg01
+Corresponding public-key to use on peer system is: 'a+GCM9rGTlXtn8YtVAUkp6DNXeQIsFijVfpc9kWdhQA='
+[edit]
+# COPY the public-key generated to VyOS-R333 config
+
+# Create wg interface with addresses:
+set interfaces wireguard wg01 address '10.1.0.2/30'
+set interfaces wireguard wg01 address '2001:23::2/64'
+set interfaces wireguard wg01 description 'VPN-to-wg333'
+# Create wireguard config:
+set interfaces wireguard wg01 peer to-wg333 allowed-ips '172.24.24.0/24'
+set interfaces wireguard wg01 peer to-wg333 allowed-ips '10.1.0.0/30'
+set interfaces wireguard wg01 peer to-wg333 allowed-ips '2001:23::/64'
+set interfaces wireguard wg01 peer to-wg333 allowed-ips '2001:333::/64'
+set interfaces wireguard wg01 peer to-wg333 public-key '3TwXoIoMVO8TvVTFahqgp+s8vc4U/b2W7Yl76T10GGM='
+set interfaces wireguard wg01 port '51820'
+# Set remote site static routes via wg:
+set protocols static route 172.24.24.0/24 next-hop 10.1.0.1 interface wg01
+set protocols static route6 2001:333::/64 next-hop 2001:23::3 interface wg01
+
+
+############################################
 # VyOS-R333 (Behind NAT)
 
 # First. Generate keypair & copy public key (CONCIG mode):
@@ -38,42 +66,7 @@ set protocols static route6 2001:222::/64 next-hop 2001:23::2 interface wg01
 
 
 ############################################
-# VyOS-R222 (Public IP: 172.22.222.222)
-
-# First. Generate keypair & copy public key (CONCIG mode):
-vyos@VyOS-R222# run generate pki wireguard key-pair install interface wg01
-"generate" CLI command executed from config session.
-Generated private-key was imported to CLI!
-Use the following command to verify: show interfaces wireguard wg01
-Corresponding public-key to use on peer system is: 'a+GCM9rGTlXtn8YtVAUkp6DNXeQIsFijVfpc9kWdhQA='
-[edit]
-# COPY the public-key generated to VyOS-R333 config
-
-# Create wg interface with addresses:
-set interfaces wireguard wg01 address '10.1.0.2/30'
-set interfaces wireguard wg01 address '2001:23::2/64'
-set interfaces wireguard wg01 description 'VPN-to-wg333'
-# Create wireguard config:
-set interfaces wireguard wg01 peer to-wg333 allowed-ips '172.24.24.0/24'
-set interfaces wireguard wg01 peer to-wg333 allowed-ips '10.1.0.0/30'
-set interfaces wireguard wg01 peer to-wg333 allowed-ips '2001:23::/64'
-set interfaces wireguard wg01 peer to-wg333 allowed-ips '2001:333::/64'
-set interfaces wireguard wg01 peer to-wg333 public-key '3TwXoIoMVO8TvVTFahqgp+s8vc4U/b2W7Yl76T10GGM='
-set interfaces wireguard wg01 port '51820'
-# Set remote site static routes via wg:
-set protocols static route 172.24.24.0/24 next-hop 10.1.0.1 interface wg01
-set protocols static route6 2001:333::/64 next-hop 2001:23::3 interface wg01
-
-
-############################################
 ####     Dynamic routing (via BGP)      ####
-# VyOS-R333
-set protocols bgp local-as 65000
-set protocols bgp address-family ipv4-unicast network 172.24.24.0/24
-set protocols bgp address-family ipv6-unicast network 2001:333::/64
-set protocols bgp neighbor 10.1.0.2 address-family ipv4-unicast nexthop-self
-set protocols bgp neighbor 10.1.0.2 address-family ipv6-unicast
-set protocols bgp neighbor 10.1.0.2 remote-as '65000'
 
 # VyOS-R222
 set protocols bgp local-as 65000
@@ -82,3 +75,12 @@ set protocols bgp address-family ipv6-unicast network 2001:222::/64
 set protocols bgp neighbor 10.1.0.1 address-family ipv4-unicast nexthop-self
 set protocols bgp neighbor 10.1.0.1 address-family ipv6-unicast
 set protocols bgp neighbor 10.1.0.1 remote-as '65000'
+
+
+# VyOS-R333
+set protocols bgp local-as 65000
+set protocols bgp address-family ipv4-unicast network 172.24.24.0/24
+set protocols bgp address-family ipv6-unicast network 2001:333::/64
+set protocols bgp neighbor 10.1.0.2 address-family ipv4-unicast nexthop-self
+set protocols bgp neighbor 10.1.0.2 address-family ipv6-unicast
+set protocols bgp neighbor 10.1.0.2 remote-as '65000'
