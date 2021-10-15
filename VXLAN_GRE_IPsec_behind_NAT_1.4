@@ -1,0 +1,128 @@
+###   Tested on     VyOS 1.4-rolling-202109190558    ###
+# VXLAN over GRE over IPsec behind NAT. Note: The final MTU via VXLAN is 1320
+#
+#   VXLAN over GRE over IPsec example VyOS-R333 behind NAT, VyOS-R222 with public IP (172.22.222.222):
+# 10.1.0.0/30 interfaces dum0 for IPsec encrypted traffic between VyOS-R333 and VyOS-R222
+# 10.23.23./30 GRE link between VyOS-R333 and VyOS-R222 over IPsec
+# eth3 - connects to LAN on VyOS-R222
+# eth3 - connects to LAN on VyOS-R333
+
+############################################
+# VyOS-R222 (Public IP: 172.22.222.222)
+
+### IKE & IPsec proposals
+set vpn ipsec ike-group aes256-sha256 dead-peer-detection action 'restart'
+set vpn ipsec ike-group aes256-sha256 dead-peer-detection interval '30'
+set vpn ipsec ike-group aes256-sha256 dead-peer-detection timeout '120'
+set vpn ipsec ike-group aes256-sha256 ikev2-reauth 'no'
+set vpn ipsec ike-group aes256-sha256 key-exchange 'ikev2'
+set vpn ipsec ike-group aes256-sha256 lifetime '3600'
+set vpn ipsec ike-group aes256-sha256 proposal 1 dh-group '19'
+set vpn ipsec ike-group aes256-sha256 proposal 1 encryption 'aes256'
+set vpn ipsec ike-group aes256-sha256 proposal 1 hash 'sha256'
+
+set vpn ipsec esp-group aes256-sha256 compression 'disable'
+set vpn ipsec esp-group aes256-sha256 mode 'tunnel'
+set vpn ipsec esp-group aes256-sha256 pfs 'dh-group19'
+set vpn ipsec esp-group aes256-sha256 proposal 1 encryption 'aes256'
+set vpn ipsec esp-group aes256-sha256 proposal 1 hash 'sha256'
+
+### WAN interface eth0 for IPsec traffic
+set vpn ipsec interface 'eth0'
+
+### IPsec peer behind NAT
+set vpn ipsec site-to-site peer @R333 authentication id R222
+set vpn ipsec site-to-site peer @R333 authentication remote-id R333
+set vpn ipsec site-to-site peer @R333 authentication mode 'pre-shared-secret'
+set vpn ipsec site-to-site peer @R333 authentication pre-shared-secret '3mqBSixtMiDy4ngWUKt0uScGH9f2vPoy'
+set vpn ipsec site-to-site peer @R333 connection-type respond
+set vpn ipsec site-to-site peer @R333 ike-group 'aes256-sha256'
+set vpn ipsec site-to-site peer @R333 ikev2-reauth 'inherit'
+set vpn ipsec site-to-site peer @R333 local-address 172.22.222.222
+set vpn ipsec site-to-site peer @R333 tunnel 1 esp-group 'aes256-sha256'
+set vpn ipsec site-to-site peer @R333 tunnel 1 local prefix '10.1.0.2/32'
+set vpn ipsec site-to-site peer @R333 tunnel 1 remote prefix '10.1.0.1/32'
+
+### GRE over IPsec. Source dum0 interface
+set interfaces dummy dum0 address 10.1.0.2/32
+
+set interfaces tunnel tun0 encapsulation gre
+set interfaces tunnel tun0 address 10.23.23.2/30
+set interfaces tunnel tun0 source-address 10.1.0.2
+set interfaces tunnel tun0 remote 10.1.0.1
+
+### Multicast VXLAN between R222eth3 & R333-eth3
+set interfaces bridge br0
+set interfaces bridge br0 member interface eth3
+set interfaces bridge br0 member interface vxlan0
+set interfaces vxlan vxlan0 group '239.0.0.241'
+set interfaces vxlan vxlan0 source-interface tun0
+set interfaces vxlan vxlan0 port '4789'
+set interfaces vxlan vxlan0 vni '32000'
+set interfaces vxlan vxlan0 mtu 1400
+
+### IP for VXLAN interface (optional)
+set interfaces bridge br0 address 10.10.10.2/24
+
+
+
+############################################
+# VyOS-R333 (Behind NAT)
+
+### IKE & IPsec proposals
+set vpn ipsec ike-group aes256-sha256 dead-peer-detection action 'restart'
+set vpn ipsec ike-group aes256-sha256 dead-peer-detection interval '30'
+set vpn ipsec ike-group aes256-sha256 dead-peer-detection timeout '120'
+set vpn ipsec ike-group aes256-sha256 ikev2-reauth 'no'
+set vpn ipsec ike-group aes256-sha256 key-exchange 'ikev2'
+set vpn ipsec ike-group aes256-sha256 lifetime '3600'
+set vpn ipsec ike-group aes256-sha256 proposal 1 dh-group '19'
+set vpn ipsec ike-group aes256-sha256 proposal 1 encryption 'aes256'
+set vpn ipsec ike-group aes256-sha256 proposal 1 hash 'sha256'
+
+set vpn ipsec esp-group aes256-sha256 compression 'disable'
+set vpn ipsec esp-group aes256-sha256 mode 'tunnel'
+set vpn ipsec esp-group aes256-sha256 pfs 'dh-group19'
+set vpn ipsec esp-group aes256-sha256 proposal 1 encryption 'aes256'
+set vpn ipsec esp-group aes256-sha256 proposal 1 hash 'sha256'
+
+### WAN interface eth0 for IPsec traffic
+set vpn ipsec interface 'eth0'
+
+### IPsec peer with public IP
+set vpn ipsec site-to-site peer 172.22.222.222 authentication id R333
+set vpn ipsec site-to-site peer 172.22.222.222 authentication remote-id R222
+set vpn ipsec site-to-site peer 172.22.222.222 authentication mode 'pre-shared-secret'
+set vpn ipsec site-to-site peer 172.22.222.222 authentication pre-shared-secret '3mqBSixtMiDy4ngWUKt0uScGH9f2vPoy'
+set vpn ipsec site-to-site peer 172.22.222.222 connection-type 'initiate'
+set vpn ipsec site-to-site peer 172.22.222.222 local-address any
+set vpn ipsec site-to-site peer 172.22.222.222 ike-group 'aes256-sha256'
+set vpn ipsec site-to-site peer 172.22.222.222 ikev2-reauth 'inherit'
+set vpn ipsec site-to-site peer 172.22.222.222 tunnel 1 esp-group 'aes256-sha256'
+set vpn ipsec site-to-site peer 172.22.222.222 tunnel 1 local prefix '10.1.0.1/32'
+set vpn ipsec site-to-site peer 172.22.222.222 tunnel 1 remote prefix '10.1.0.2/32'
+#set vpn ipsec site-to-site peer 172.22.222.222 tunnel 1 protocol 'gre'
+
+### GRE over IPsec. Source dum0 interface
+set interfaces dummy dum0 address 10.1.0.1/32
+
+set interfaces tunnel tun0 encapsulation gre
+set interfaces tunnel tun0 address 10.23.23.1/30
+set interfaces tunnel tun0 source-address 10.1.0.1
+set interfaces tunnel tun0 remote 10.1.0.2
+
+### Multicast VXLAN between R222eth3 & R333-eth3
+set interfaces bridge br0
+set interfaces bridge br0 member interface dum10
+set interfaces bridge br0 member interface eth3
+set interfaces bridge br0 member interface vxlan0
+set interfaces vxlan vxlan0 group '239.0.0.241'
+set interfaces vxlan vxlan0 source-interface tun0
+set interfaces vxlan vxlan0 port '4789'
+set interfaces vxlan vxlan0 vni '32000'
+set interfaces vxlan vxlan0 mtu 1400
+
+### IP for VXLAN interface (optional)
+set interfaces bridge br0 address 10.10.10.3/24
+
+
