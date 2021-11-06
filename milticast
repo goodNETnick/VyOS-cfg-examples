@@ -1,0 +1,2 @@
+# allow VyOS to reply on multicast pings
+set system sysctl parameter net.ipv4.icmp_echo_ignore_broadcasts value 0
