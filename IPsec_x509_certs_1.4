@@ -1,4 +1,7 @@
-R1 chosen as CA
+# IPsec between R1 & R2 with R1 as a CA for x509 certs
+# Tested in VyOS 1.4-rolling-202110310317
+
+#### R1 chosen as CA
 # ON R1 (CA) IN NON CONFIG MODE #
 vyos@R1:~$ generate pki ca install CA
 # generate keys and copy commands: 
@@ -12,6 +15,7 @@ commit
 save
 
 # ON R1 (CA) IN NON CONFIG MODE #
+### Fill in all the fields. ESPECIALLY WITH СТ (Enter common name:)
 vyos@R1:~$ generate pki certificate sign CA install R1
 
 Do you already have a certificate request? [y/N] N
@@ -28,8 +32,8 @@ Enter certificate type: (client, server) (Default: server)
 Note: If you plan to use the generated key on this router, do not encrypt the private key.
 Do you want to encrypt the private key with a passphrase? [y/N] N
 Configure mode commands to install:
-set pki certificate R1 certificate 'MIIDrDCCApSgAwIBAgIUcGWPYS+nD4N36huu+EAssqnaYI8wDQYJKoZIhvcNAQELBQAwVzELMAkGA1UEBhMCR0IxEzARBgNVBAgMClNvbWUtU3RhdGUxEjAQBgNVBAcMCVNvbWUtQ2l0eTENMAsGA1UECgwEVnlPUzEQMA4GA1UEAwwHdnlvcy5pbzAeFw0yMTExMTExMTMzNTRaFw0yMjExMTExMTMzNTRaMFIxCzAJBgNVBAYTAkdCMRMwEQYDVQQIDApTb21lLVN0YXRlMRIwEAYDVQQHDAlTb21lLUNpdHkxDTALBgNVBAoMBFZ5T1MxCzAJBgNVBAMMAlIxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr2sRTchRpdrY0NqT6or4A0Oft/DGwjT0RmvBP7HrwdKjMAlYsQ9oGcIQa11NYfHMJ+GhYEKieG458ra7J9G6EOtgd1OgT9727X8F5ZOHaZkylLY+PUrCj+MroZKnM/sfrx8b2svoLgaeHbkP88IJlxmxtsb/elE/tW6TMS7s6tMB1CUXjR3au2x8QFYr6Z3UuAqDXzZWgyzRd5H18sTG+yO61vyAIa5nkEILnNicoMYtcXeLDAGC+B445aYa8aYlvokFXJAYQjZa9FprZ5W3XokMEIVt7PSeqwQi8Q64dKmVZJYf13a4o+CVzyGWbSlN+SRhV7/DgjsAIe5g5c/DBQIDAQABo3UwczAMBgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDATAdBgNVHQ4EFgQUh235ih1eAD6payxActGFz14UNB8wHwYDVR0jBBgwFoAU2k35ioL82PNp8fnnnyJuHnZAZHowDQYJKoZIhvcNAQELBQADggEBAE8gOqvxqV9z0HMRL6piNrNCysU8AqvzHND7nQ8gQUIVGZYnSpTltUX8IJ4pXN1XOmUvTq071+sgjE2txaKbo2GfhYf3Hcjv1jEaPdxHDMpCVl0+iXZWZTFowAxtf4kEWictUpmr3TfqqEH+Yfn/xSkTfGK0e7LjsSFMvKBfvXOacwRAjybfGiZmqCqPrMfncx/0ta+skDjim+aWb/9QF6hedI5zV/Z0RSkdMabDRyRqFm6kQe3Apx4V7n5TfjtUFAtsudM7Xy7y2JvvLdGPfE8bk4yJ4LqBudqoG09zA5JuWoanwcAy1PxZVoNhgeKmsCKz4HsJ7jaKlD5gQnw7xE4='
-set pki certificate R1 private key 'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCvaxFNyFGl2tjQ2pPqivgDQ5+38MbCNPRGa8E/sevB0qMwCVixD2gZwhBrXU1h8cwn4aFgQqJ4bjnytrsn0boQ62B3U6BP3vbtfwXlk4dpmTKUtj49SsKP4yuhkqcz+x+vHxvay+guBp4duQ/zwgmXGbG2xv96UT+1bpMxLuzq0wHUJReNHdq7bHxAVivpndS4CoNfNlaDLNF3kfXyxMb7I7rW/IAhrmeQQguc2Jygxi1xd4sMAYL4HjjlphrxpiW+iQVckBhCNlr0WmtnlbdeiQwQhW3s9J6rBCLxDrh0qZVklh/Xdrij4JXPIZZtKU35JGFXv8OCOwAh7mDlz8MFAgMBAAECggEBAIeUTCp/IkP7UsqRtfN4d1omgSLs8OIXhZmMHS+6t0n2IHS3NJqdGsuVx5UD5xRFi5JjfJPmzKYiI52piButqI79LXDs7KHu5ZEINSmMjgObCZIRDSfYSWpmnUljDOJLPODgPWotYYV5TeoRJ/gxx7HGhSmMwtbqR0BWd2NzLmALb44YCtPftmYqseSSFfQgmttZPYr2KE/yMyqaT7aKmIaGmmKlEWvY7Fkh6zJ7RRZvHTebHO5M2NGx4eMuDBnRTSfUt9VHomS3GsX7TEI6En88osEFamn5bxcmnNMJKmbZluuWCGzvTlSjSBy9rjwFcTSBGpFGwYJyNqeS44PeyF0CgYEA6FoYm9KDOIcUXhgxogLb/aRU5iCZvuZex27HEI70gGkcev6PsX7Vz1zTK6C4Fha00/SIvqTZ7Y8ZSfO5FZQzUSmb9EkjGs4+kvMHJ6VAuzSarbS0+ZyBJJycpPZAzfHul2pPZH6beoxE68qvUIJBr8CZSrQp2uLP2jJKAysT3/sCgYEAwUWR8xmCoXzHEBM1jYYm/aobEEmizqj8yHRnpOQ9ND54UBFGbo4Xtn/T9AMHSHPW2zxPjfGPNICP8hQD8HzXiVO8NiBxRb5a6bRsXd2Kf4P7h3wX4VjgediZ1xLD8Tt+kp/2LmLj0/QcWvKPs+D9jmmJAX29WJkXo/lEZTcyeP8CgYBHZI+VKWzKbK70boipmClSWTEA+Nlkz9Ilg0NFMjesUR/AJwGt7yPxMDtud1a46scrLULrGSohFUwW7f1bxQqzkI5r1CEmNmMBsgzrwJoQK4yvfQvyeoUv47M5+LRW01SVT8QPQ9uwHvN6Y+/UVAGs6Afx7UPDDtgA2lzldlIICwKBgQC2w6kur9L+DtbXdrLPsCqy+ec50chpkRfqH1nbbhIKk4CGhq+J4EjARcUTHMIIW7K0AyZf3ixDw8dbbl4DTqsrq8lxjeBPyaCDHCDV6qgLya1UA585dChiUNe5sH8mYdJhqW7NkqpLRq6Bupr1yS89OsNaa6NgYvUeFJv+8uGB1QKBgALOo2ERVu8F2MFbYw/0TWc2lbzwjtCDqhg3mpVErO/tdUVyuHjTJ/JsnR4OIb2VYzGua8rtLlfKNobhnZSHEoDDnparPQTiMH9npP1YphwUGL5Wq1UluH6oRyEwGmMUOVb09BZfXkVudGQCbYddw5K+hy8mRQUDmHeme2AvpuaO'
+set pki certificate R1 certificate 'MIIDrDCCA ..............='
+set pki certificate R1 private key 'MIIEvgIBA...............O'
 
 
 vyos@R1:~$ generate pki certificate sign CA install R2
@@ -47,18 +51,18 @@ Enter certificate type: (client, server) (Default: server)
 Note: If you plan to use the generated key on this router, do not encrypt the private key.
 Do you want to encrypt the private key with a passphrase? [y/N] N
 Configure mode commands to install:
-set pki certificate R2 certificate 'MIIDrDCCApSgAwIBAgIUXExzBMY5idCdaJCl5w99cboSCfMwDQYJKoZIhvcNAQELBQAwVzELMAkGA1UEBhMCR0IxEzARBgNVBAgMClNvbWUtU3RhdGUxEjAQBgNVBAcMCVNvbWUtQ2l0eTENMAsGA1UECgwEVnlPUzEQMA4GA1UEAwwHdnlvcy5pbzAeFw0yMTExMTExMTM1MTFaFw0yMjExMTExMTM1MTFaMFIxCzAJBgNVBAYTAkdCMRMwEQYDVQQIDApTb21lLVN0YXRlMRIwEAYDVQQHDAlTb21lLUNpdHkxDTALBgNVBAoMBFZ5T1MxCzAJBgNVBAMMAlIyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxFtcIzQGTpEEl9QNbdgfEhdp5mQ2QDY3/47RdTlu3/oNDk726lTTrK7J0wbGufPV6rI/SsP85dxXS3Xl6CBupGLywCEYk0004zJmQwunimNnzM2s2F5GZvIj0XifYSAAQjnf1Rbg82YU67in6BTfihVpxUq+npc2a1mKszUf0Q8488CE2TaUBdDba5YSW582VfLlfPN0TqhX+GGROY1FbhHQhCqUKp4iXGpLJbiJapMvGtr8Pj5IG9IQ7TGnJ/ueytJkZ+ZBFFJ/+dead+XW3V1KoI1DHXizwQfHlDnHQBaX30/L7M3qs1WAUfK7Z14QaKmhJVVOnVNrVvGOW1mYAQIDAQABo3UwczAMBgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDATAdBgNVHQ4EFgQUyM+9LI1+Sll0QmWOFY6H8TmQZoMwHwYDVR0jBBgwFoAU2k35ioL82PNp8fnnnyJuHnZAZHowDQYJKoZIhvcNAQELBQADggEBAK1BFDxnRXJOXwFd06mRX+cvLHSP4oSZoJGa8oJfSSi1KgFzkhiBnsfZE4AevNMVi2fOK+w7sfLuR8DOlLtKqdSZYiWoCuSJoZaGOtwnRjCUzWJPUYD8v1eN3qQ198UFVUMBR373yvpUJ0P84lI398DIiUkk5152bN/17noxk+Mmjltsi6w1GVDu7tKEeapwtcfAJjtVzjDPYzPqchRmbZTHG5evse2cLbFVK0Mjyoq0kbZBKDqnGiypxTOqloaTYEHHPnsSsnl9dZO7Iing1nySFu9reawvD9vT2tGCuut84V7brggLxuBvqCPS58aNgYUELQP4MlZQjshbtimKi3Q='
-set pki certificate R2 private key 'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDEW1wjNAZOkQSX1A1t2B8SF2nmZDZANjf/jtF1OW7f+g0OTvbqVNOsrsnTBsa589Xqsj9Kw/zl3FdLdeXoIG6kYvLAIRiTTTTjMmZDC6eKY2fMzazYXkZm8iPReJ9hIABCOd/VFuDzZhTruKfoFN+KFWnFSr6elzZrWYqzNR/RDzjzwITZNpQF0NtrlhJbnzZV8uV883ROqFf4YZE5jUVuEdCEKpQqniJcaksluIlqky8a2vw+Pkgb0hDtMacn+57K0mRn5kEUUn/515p35dbdXUqgjUMdeLPBB8eUOcdAFpffT8vszeqzVYBR8rtnXhBoqaElVU6dU2tW8Y5bWZgBAgMBAAECggEAeHrmKeN+Cy8H9nDyXHfDeMJNBERw1S1vZqsm8hpvYZZ39FOXRWkPCGGnDIiX3vkyRHNiSmm+/vsXxQFuM+PSf6MG98RW4+r3jIAcJv87qbocsplweMI/yGLCf4DXqiyMfBYutPz4wd/c7lW7ELfeAUfqQlf+Zii6B1xFsnfiMc9mK34xYV6t4xvh+EbkCegfuuf2IP8wFPr0nPu/m6dqjJkVaQHQRSB0+nr+C22x6PMlWrZSfwlnn5bPAxuNVGkgxMGFmag265v+gtXYzpzL/dAUiKymxuSYWwfyhFTL7FIUzP3vvaCGT9mwCCXUziBKFdOxaOxKE3eFLPNvG+06kQKBgQDgUj4SPALwuNCQl33hAqlD7vEMtwxGHA0OahwwUMz4BJBa0ghLFu1y169nakzfrm8MpTmHeLRqQm+tBbOwexjpPGh+HEeVka7l6ybCOCCv25BlmSa3JxJG4XMaZI15lOEhnIcetjg4045EVnmaMJYyehnwB8ZR76T93MaIKeJUowKBgQDgFiMZ3wdIVAsvOS9qNLKOVLmsGe3ld+21HtVuNKsth6IX2AflQr60FV8ivh8bSsogYo83Kb58Y10nQoNihR5316/9ZbxBtEb/Vts/DGwir9P1f/7UxRqR2dllk6c1ccW9XXqysORBPWnHQ64dzUwukPDE+Wmv5yVR3sBGPeqHCwKBgFAqdA5WLgLTOY4C5bSNG+qwMKsHm7ZOfggBudM2fRnBn8klOFuFdRROqlu97H0fvIX7YiTc6TT0Sy69U+slAtEPipRPDPIR3zxBnldYca4HPIJiiih4KRr1pQnwl3K01wQJCWzbWBpO2I/pi4mkBXlCk5RpYuGTUBZ9WOH+fekbAoGBALSRAf3R2qNsnYqS8OMKzaqlGOxWBH14cwIUc3UXWawZdAL0oAAcFWE1K3DqdFRgopkP8klICOdgheqhzQ7xJ4j4Mybj+JuVMfSEv6yBTQ1yU0Cqv+QhY3SNb4FLRlxpbiZWEg21PmhXnUnk/oOjLzUCtBB0zbXhcxAShyrSr43bAoGBAJZrtTj+UVBgWjB4iuKkpiPTCh0rNPu+kQUosb29Nt2zMSA9ROkyQAR9FrMA+Uvf3dfx5Eu4VxOg5P54C/+w+5jGANJn+L3sdeE3pU0mV9PuFISSE7W1enwp77wtVGOnHOmXDV4QYusmB6xC66VRZ7uPBSz41Dzrw6+9KVCE+SVL'
+set pki certificate R2 certificate 'MIIDrDCCAp...........='
+set pki certificate R2 private key 'MIIEvgIBAD...........L'
 
 
 # on R1 (CA cert already there. Needs: R1 cert, R1 private key):
-set pki certificate R1 certificate 'MII..........'
-set pki certificate R1 private key 'MII..........'
+set pki certificate R1 certificate 'MIIDrDCCA ..............='
+set pki certificate R1 private key 'MIIEvgIBA...............O'
 
 # on R2 (Needs: CA cert, R2 cert, R2 private key):
-set pki ca CA certificate 'MIIDnT.........'
-set pki certificate R1 certificate 'MII..........'
-set pki certificate R1 private key 'MII..........'
+set pki ca CA certificate 'MIIDnTCCAo........='
+set pki certificate R1 certificate 'MIIDrDCCAp...........='
+set pki certificate R1 private key 'MIIEvgIBA...............O'
 
 # on R1:
 
