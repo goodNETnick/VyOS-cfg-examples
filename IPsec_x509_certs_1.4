@@ -3,8 +3,20 @@
 
 #### R1 chosen as CA
 # ON R1 (CA) IN NON CONFIG MODE #
+### generate keys and copy commands: 
 vyos@R1:~$ generate pki ca install CA
-# generate keys and copy commands: 
+vyos@vyos:~$ generate pki ca install CA
+Enter private key type: [rsa, dsa, ec] (Default: rsa)
+Enter private key bits: (Default: 2048)
+Enter country code: (Default: GB)
+Enter state: (Default: Some-State)
+Enter locality: (Default: Some-City)
+Enter organization name: (Default: VyOS)
+Enter common name: (Default: vyos.io) CA
+Enter how many days certificate will be valid: (Default: 1825)
+Note: If you plan to use the generated key on this router, do not encrypt the private key.
+Do you want to encrypt the private key with a passphrase? [y/N] N
+Configure mode commands to install:
 set pki ca CA certificate 'MIIDnTCCAo........='
 set pki ca CA private key 'MIIEvwIBAD........='
 
