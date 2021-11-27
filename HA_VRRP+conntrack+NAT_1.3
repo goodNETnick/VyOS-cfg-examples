@@ -1,0 +1,95 @@
+# IPsec between R1 & R2 with R1 as a CA for x509 certs
+# Tested in VyOS 1.3.0-epa3
+#############################
+
+set system host VyOS-FO-B
+
+#set interface ethernet eth0 address 174.121.83.47/24
+#set interface ethernet eth1 address 192.168.1.47/24
+
+set interfaces ethernet eth1 address '169.254.1.1/24'
+set interfaces ethernet eth1 description 'LAN'
+
+set interfaces ethernet eth0 address '169.254.0.1/24'
+set interfaces ethernet eth0 description 'WAN'
+
+set interfaces ethernet eth3 address '169.254.3.1/24'
+
+set high-availability vrrp group LAN hello-source-address '169.254.1.1'
+set high-availability vrrp group LAN interface 'eth1'
+set high-availability vrrp group LAN peer-address '169.254.1.2'
+set high-availability vrrp group LAN priority '200'
+set high-availability vrrp group LAN virtual-address '192.168.1.47/24'
+set high-availability vrrp group LAN vrid '101'
+set high-availability vrrp group LAN no-preempt
+
+set high-availability vrrp group WAN hello-source-address '169.254.0.1'
+set high-availability vrrp group WAN interface 'eth0'
+set high-availability vrrp group WAN peer-address '169.254.0.2'
+set high-availability vrrp group WAN priority '200'
+set high-availability vrrp group WAN virtual-address '174.121.83.47/24'
+set high-availability vrrp group WAN vrid '100'
+set high-availability vrrp group WAN no-preempt
+
+set high-availability vrrp sync-group SYNCgrp member 'LAN'
+set high-availability vrrp sync-group SYNCgrp member 'WAN'
+set service conntrack-sync accept-protocol 'tcp'
+set service conntrack-sync accept-protocol 'udp'
+set service conntrack-sync accept-protocol 'icmp'
+set service conntrack-sync failover-mechanism vrrp sync-group 'SYNCgrp'
+set service conntrack-sync interface 'eth3'
+set service conntrack-sync mcast-group '225.0.0.50'
+
+set service conntrack-sync disable-external-cache
+
+set nat source rule 100 outbound-interface 'eth0'
+set nat source rule 100 source address '192.168.1.0/24'
+set nat source rule 100 translation address 'masquerade'
+
+
+
+#########################################################
+
+set system host VyOS-FO-B
+
+#set interface ethernet eth0 address 174.121.83.47/24
+#set interface ethernet eth1 address 192.168.1.47/24
+
+set interfaces ethernet eth1 address '169.254.1.2/24'
+set interfaces ethernet eth1 description 'LAN'
+
+set interfaces ethernet eth0 address '169.254.0.2/24'
+set interfaces ethernet eth0 description 'WAN'
+
+set interfaces ethernet eth3 address '169.254.3.2/24'
+
+set high-availability vrrp group LAN hello-source-address '169.254.1.2'
+set high-availability vrrp group LAN interface 'eth1'
+set high-availability vrrp group LAN peer-address '169.254.1.1'
+set high-availability vrrp group LAN priority '100'
+set high-availability vrrp group LAN virtual-address '192.168.1.47/24'
+set high-availability vrrp group LAN vrid '101'
+set high-availability vrrp group LAN no-preempt
+
+set high-availability vrrp group WAN hello-source-address '169.254.0.2'
+set high-availability vrrp group WAN interface 'eth0'
+set high-availability vrrp group WAN peer-address '169.254.0.1'
+set high-availability vrrp group WAN priority '100'
+set high-availability vrrp group WAN virtual-address '174.121.83.47/24'
+set high-availability vrrp group WAN vrid '100'
+set high-availability vrrp group WAN no-preempt
+
+set high-availability vrrp sync-group SYNCgrp member 'LAN'
+set high-availability vrrp sync-group SYNCgrp member 'WAN'
+set service conntrack-sync accept-protocol 'tcp'
+set service conntrack-sync accept-protocol 'udp'
+set service conntrack-sync accept-protocol 'icmp'
+set service conntrack-sync failover-mechanism vrrp sync-group 'SYNCgrp'
+set service conntrack-sync interface 'eth3'
+set service conntrack-sync mcast-group '225.0.0.50'
+
+set service conntrack-sync disable-external-cache
+
+set nat source rule 100 outbound-interface 'eth0'
+set nat source rule 100 source address '192.168.1.0/24'
+set nat source rule 100 translation address 'masquerade'
