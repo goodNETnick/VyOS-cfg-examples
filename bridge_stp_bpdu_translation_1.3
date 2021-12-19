@@ -1,0 +1,11 @@
+# Bridge br1 between eth0.705 & eth1.706 STP BPDU VLAN_ID modification
+# Tested in VyOS VyOS 1.3-beta-202112120443
+
+sudo nft add table bridge br1
+sudo nft add chain bridge br1 vlan_change_705 { type filter hook postrouting priority 300 \; policy accept \; }
+sudo nft add rule bridge br1 vlan_change_705 meta oifname eth0.705 ether daddr 01:00:0c:cc:cc:cd @nh,384,16 706 @nh,384,16 set 705
+
+
+sudo nft add table bridge br1
+sudo nft add chain bridge br1 vlan_change_706 { type filter hook postrouting priority 300 \; policy accept \; }
+sudo nft add rule bridge br1 vlan_change_706 meta oifname eth1.706 ether daddr 01:00:0c:cc:cc:cd @nh,384,16 705 @nh,384,16 set 706
