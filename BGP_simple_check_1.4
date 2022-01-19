@@ -1,0 +1,36 @@
+###   Tested on     VyOS 1.4-rolling-202201060842    ###
+# BGP R1---R2
+# Routes from R1 to R2
+# We need to check routes on R2
+
+R1:
+
+set interfaces dummy dum5 address '10.5.5.5/24'
+set interfaces dummy dum6 address '10.6.6.6/24'
+set interfaces dummy dum9 address '10.9.9.9/24'
+set interfaces ethernet eth0 address '10.1.2.1/24'
+
+set policy prefix-list TST_PRF_LST rule 10 action 'permit'
+set policy prefix-list TST_PRF_LST rule 10 prefix '10.5.5.0/24'
+set policy prefix-list TST_PRF_LST rule 20 action 'permit'
+set policy prefix-list TST_PRF_LST rule 20 prefix '10.6.6.0/24'
+
+set policy route-map TST-RM rule 10 action 'permit'
+set policy route-map TST-RM rule 10 match ip address prefix-list 'TST_PRF_LST'
+set policy route-map TST-RM rule 1000 action 'deny'
+
+set protocols bgp address-family ipv4-unicast network 10.5.5.0/24
+set protocols bgp address-family ipv4-unicast network 10.6.6.0/24
+set protocols bgp address-family ipv4-unicast network 10.8.8.0/24
+set protocols bgp address-family ipv4-unicast network 10.9.9.0/24
+set protocols bgp local-as '65001'
+set protocols bgp neighbor 10.1.2.2 address-family ipv4-unicast route-map export 'TST-RM'
+set protocols bgp neighbor 10.1.2.2 remote-as '65002'
+
+################
+R2:
+
+set interfaces ethernet eth1 address '10.1.2.2/24'
+set protocols bgp local-as '65002'
+set protocols bgp neighbor 10.1.2.1 address-family ipv4-unicast
+set protocols bgp neighbor 10.1.2.1 remote-as '65001'
