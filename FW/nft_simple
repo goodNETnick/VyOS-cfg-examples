@@ -3,3 +3,10 @@ sudo nft add table ip MY_TABLE
 sudo nft add chain ip MY_TABLE MY_CHAIN { type filter hook forward priority 0 \; policy accept \; }
 sudo nft add rule ip MY_TABLE MY_CHAIN ip protocol icmp drop
 
+# Deny all icmp forwarding out eth0
+sudo nft add table ip MY_TABLE
+sudo nft add chain ip MY_TABLE MY_CHAIN { type filter hook forward priority 0 \; policy accept \; }
+sudo nft add rule ip MY_TABLE MY_CHAIN ip protocol icmp device eth0 drop
+
+
+
