@@ -8,5 +8,12 @@ sudo nft add table ip MY_TABLE
 sudo nft add chain ip MY_TABLE MY_CHAIN { type filter hook forward priority 0 \; policy accept \; }
 sudo nft add rule ip MY_TABLE MY_CHAIN ip protocol icmp device eth0 drop
 
+# Copy IPsec packets to 169.254.0.2
+sudo nft create table ip ipsec_helper
+sudo nft create chain ip ipsec_helper ipsec_chain { type filter hook output priority raw \; }
+sudo nft create chain ip ipsec_helper ipsec_chain_in { type filter hook prerouting priority raw \; }
+sudo nft add rule ip ipsec_helper ipsec_chain ip protocol 50 counter dup to 169.254.0.2 device eth0
+sudo nft add rule ip ipsec_helper ipsec_chain_in ip protocol 50 counter dup to 169.254.0.2 device eth0
+
 
 
