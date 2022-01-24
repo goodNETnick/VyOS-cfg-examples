@@ -15,5 +15,9 @@ sudo nft create chain ip ipsec_helper ipsec_chain_in { type filter hook prerouti
 sudo nft add rule ip ipsec_helper ipsec_chain ip protocol 50 counter dup to 169.254.0.2 device eth0
 sudo nft add rule ip ipsec_helper ipsec_chain_in ip protocol 50 counter dup to 169.254.0.2 device eth0
 
+# Bridge filter all forwarding ICMP packets
+sudo nft add table bridge MY_BT
+sudo nft add chain bridge MY_BT MY_BC { type filter hook forward priority -200 \; policy accept \; }
+sudo nft add rule bridge MY_BT MY_BC ip protocol icmp drop
 
 
