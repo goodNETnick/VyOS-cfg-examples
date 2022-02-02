@@ -19,3 +19,81 @@ set vpn openconnect authentication local-users username tst4 init-cnt <3>
 set vpn openconnect authentication local-users username tst4 time-offset <60>
         <help> Optional. Relative time period offset adjustment (for time tokens). Default 0 </help>
 
+######## OP MODE ###########
+generate openconnect otp-key username <NAME> 
+  Possible completions:
+  <Enter>       Execute the current command to generate the OTP key information
+  file          Write generated OTP key information into the specified filename
+  install       Commands for installing generated OTP key into running configuration
+
+######## OP MODE EXAMPLES ###########
+
+vyos@vyos:~$ generate openconnect otp-key username tst4
+
+█████████████████████████████████
+██ ▄▄▄▄▄ █▀█▄▄▄▀▄▀█ ▄▄ █ ▄▄▄▄▄ ██
+██ █   █ █▀█▄▀█ ██▄▀█▀▀█ █   █ ██
+██ █▄▄▄█ █▀ ▄▄▀▄ ▀ ▀▀▄▄█ █▄▄▄█ ██
+██▄▄▄▄▄▄▄█▄▀▄█ ▀▄█▄█▄▀ █▄▄▄▄▄▄▄██
+██▄▄  ▄▀▄▄ ▄█▀ ▄██  ▄▀ ▄▀ ▀▄█ ▀██
+██▀▀█ ▀▄▄▄▄█▄▀▀ ▀▄█▄███▀█ █ █▀███
+████ ▀ █▄█ ▄▄█ █▄  ▄██▀█▀▀▀ ▄▄▀██
+███ ▄█▄█▄▀█▄██▀▀▀▀█▄▄█▀ █▀  █▀███
+██▀▄ █▄█▄▄ ▄▀▀▄█▄▄█▄▀▀▄ ▀ ▀ ▄█▀██
+██ █ ▀▀█▄ ▀ ▀█ ▄▄  ███▀█  █▀██▀██
+██▄█▄██▄▄█ ▄ █▄▀▀█▄▄▀▀ ▄▄▄ █ ▀ ██
+██ ▄▄▄▄▄ █▄▄   █▀ ▀▄▄  █▄█ ██▀███
+██ █   █ █ ▀█▀▀▄█▄ ▄█▀ ▄▄▄▄▄  ▀██
+██ █▄▄▄█ █ ▀  ▄█   ▄ ▀▀█▄▀▄█▄ ███
+██▄▄▄▄▄▄▄█▄███▄█▄▄█▄█▄█▄█▄██▄████
+█████████████████████████████████
+Hex secret: 2753084fe269ce586f982cce1e2baf58
+Base32 secret: E5JQQT7CNHHFQ34YFTHB4K5PLA======
+Digits: 6
+Window size: 3
+TOTP mode: SHA1
+Step size (seconds): 30
+Start time: 1970-01-01 00:00:00 UTC (0)
+Current time: 2022-02-01 09:21:58 UTC (1643707318)
+Counter: 0x3440863 (54790243)
+
+823282
+424912
+647327
+145154
+otpauth://totp/tst4@vyos?secret=E5JQQT7CNHHFQ34YFTHB4K5PLA
+
+
+
+vyos@vyos:~$ generate openconnect otp-key username tst4 install
+
+█████████████████████████████████
+██ ▄▄▄▄▄ █▀█▄▄▄▀▄▀█ ▄▄ █ ▄▄▄▄▄ ██
+██ █   █ █▀█▄▀█ ██▄▀█▀▀█ █   █ ██
+██ █▄▄▄█ █▀ ▄▄▀▄ ▀ ▀▀▄▄█ █▄▄▄█ ██
+██▄▄▄▄▄▄▄█▄▀▄█ ▀▄█▄█▄▀ █▄▄▄▄▄▄▄██
+██▄▄  ▄▀▄▄ ▄█▀ ▄██  ▄▀ ▄▀ ▀▄█ ▀██
+██▀▀█ ▀▄▄▄▄█▄▀▀ ▀▄█▄███▀█ █ █▀███
+████ ▀ █▄█ ▄▄█ █▄  ▄██▀█▀▀▀ ▄▄▀██
+███ ▄█▄█▄▀█▄██▀▀▀▀█▄▄█▀ █▀  █▀███
+██▀▄ █▄█▄▄ ▄▀▀▄█▄▄█▄▀▀▄ ▀ ▀ ▄█▀██
+██ █ ▀▀█▄ ▀ ▀█ ▄▄  ███▀█  █▀██▀██
+██▄█▄██▄▄█ ▄ █▄▀▀█▄▄▀▀ ▄▄▄ █ ▀ ██
+██ ▄▄▄▄▄ █▄▄   █▀ ▀▄▄  █▄█ ██▀███
+██ █   █ █ ▀█▀▀▄█▄ ▄█▀ ▄▄▄▄▄  ▀██
+██ █▄▄▄█ █ ▀  ▄█   ▄ ▀▀█▄▀▄█▄ ███
+██▄▄▄▄▄▄▄█▄███▄█▄▄█▄█▄█▄█▄██▄████
+█████████████████████████████████
+Hex secret: 2753084fe269ce586f982cce1e2baf58
+Base32 secret: E5JQQT7CNHHFQ34YFTHB4K5PLA======
+
+You are not in configure mode, commands to install manually from configure mode:
+set vpn openconnect authentication local-users username tst4 otp-hex-key '2753084fe269ce586f982cce1e2baf58'
+
+
+
+ Commands for installing generated CA certificate into running configuration
+ <DH name>     Commands for installing generated DH parameters into running configuration
+ username      Username for which you want to generate the OTP key information
+
+
