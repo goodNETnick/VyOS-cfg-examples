@@ -18,7 +18,6 @@ Possible completions:
 
 
 
-
 set vpn openconnect authentication local-users username tst4 password 'tst4'
 set vpn openconnect authentication mode 'local-otp'
 
@@ -116,3 +115,4 @@ set vpn openconnect authentication local-users username tst4 otp-hex-key '275308
  username      Username for which you want to generate the OTP key information
 
 
+http://dokuwiki.pcfreak.de/doku.php?id=public:linux:otp:setup_feeradius_for_otp
