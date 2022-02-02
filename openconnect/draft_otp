@@ -1,0 +1,21 @@
+######## CONFIG MODE ###########
+
+set vpn openconnect authentication local-users username tst4 password 'tst4'
+set vpn openconnect authentication mode 'local-otp'
+
+set vpn openconnect authentication local-users username tst4 key <2753084fe269ce586f982cce1e2baf58>
+        <help> Token Key Secret key for the token algorithm (see RFC 4226) </help>
+        <help> Сan be generated in operational mode with the command 'generate openconnect otp-key username <Username>' </help>
+
+set vpn openconnect authentication local-users username tst4 token-type <hotp-time>
+        <help> Token type. Time tokens by default. Possible types are: </help>
+        <help> hotp-time type. Time tokens </help>
+        <help> hotp-event type. Event tokens </help>
+
+set vpn openconnect authentication local-users username tst4 pin <1234>
+        <help> Optional. User may have an arbitrary length PIN. Default no PIN required</help>
+set vpn openconnect authentication local-users username tst4 init-cnt <3>
+        <help> Optional. Initial counter value (for event tokens). Default 0 </help>
+set vpn openconnect authentication local-users username tst4 time-offset <60>
+        <help> Optional. Relative time period offset adjustment (for time tokens). Default 0 </help>
+
