@@ -20,6 +20,7 @@ Possible completions:
 
 set vpn openconnect authentication local-users username tst4 password 'tst4'
 set vpn openconnect authentication mode 'local-otp'
+        <description>Use local username/password + one time password (OTP) autentication</description>
 
 set vpn openconnect authentication local-users username tst4 key <2753084fe269ce586f982cce1e2baf58>
         <help> Token Key Secret key for the token algorithm (see RFC 4226) </help>
