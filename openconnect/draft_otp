@@ -16,7 +16,7 @@ Possible completions:
    time-offset  Optional. Relative time period offset adjustment (for time tokens). Default 0
    token-type   Optional. Token type. Time tokens by default
 
-
+################################
 
 set vpn openconnect authentication local-users username tst4 password 'tst4'
 set vpn openconnect authentication mode 'local-otp'
