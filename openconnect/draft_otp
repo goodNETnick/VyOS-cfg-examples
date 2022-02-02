@@ -26,8 +26,20 @@ set vpn openconnect authentication mode 'local-otp'
                   </valueHelp>
 
 set vpn openconnect authentication local-users username tst4 key <2753084fe269ce586f982cce1e2baf58>
-        <help> Token Key Secret key for the token algorithm (see RFC 4226) </help>
-        <help> Сan be generated in operational mode with the command 'generate openconnect otp-key username <Username>' </help>
+        <leafNode name="key">
+          <properties>
+            <help>Token Key Secret key for the token algorithm (see RFC 4226). Сan be generated in operational mode with the command 'generate openconnect otp-key username <Username>'</help>
+            <valueHelp>
+              <format>txt</format>
+              <description>OTP key in hex-encoded format</description>
+            </valueHelp>
+            <constraint>
+              <regex>[a-fA-F0-9]{20,2000}</regex>
+            </constraint>
+            <constraintErrorMessage>Key name must in hex be alphanumerical only (min. 20 hex characters)</constraintErrorMessage>
+          </properties>
+        </leafNode>
+https://cryptography.io/en/latest/hazmat/primitives/twofactor/#two-factor-authentication
 
 set vpn openconnect authentication local-users username tst4 token-type <hotp-time>
         <help> Token type. Time tokens by default. Possible types are: </help>
