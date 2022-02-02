@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # This script generates the OTP data for the account and writes 
 # this data to the file OATH_FILE='/config/auth/ocserv_usrs.oath'.
 # Assumes the <account_name> parameter when called:
