@@ -23,24 +23,47 @@ set vpn openconnect authentication mode 'local-otp'
                     <description>Use local username/password + one time password (OTP) autentication</description>
                   </valueHelp>
 
-set vpn openconnect authentication local-users username tst4 key <2753084fe269ce586f982cce1e2baf58>
-        <leafNode name="key">
+set vpn openconnect authentication local-users username tst4 otp key <2753084fe269ce586f982cce1e2baf58>
+set vpn openconnect authentication local-users username tst4 otp otp-length <6>
+        <node name="otp">
           <properties>
-            <help>Token Key Secret key for the token algorithm (see RFC 4226). Сan be generated in operational mode with the command 'generate openconnect otp-key username <Username>'</help>
-            <valueHelp>
-              <format>txt</format>
-              <description>OTP key in hex-encoded format</description>
-            </valueHelp>
-            <constraint>
-              <regex>[a-fA-F0-9]{20,2000}</regex>
-            </constraint>
-            <constraintErrorMessage>Key name must in hex be alphanumerical only (min. 20 hex characters)</constraintErrorMessage>
+            <help>2FA OTP authentication parameters</help>
           </properties>
-        </leafNode>
+          <children>
+            <leafNode name="key">
+              <properties>
+                <help>Token Key Secret key for the token algorithm (see RFC 4226)</help>
+                <valueHelp>
+                  <format>txt</format>
+                  <description>OTP key in hex-encoded format</description>
+                </valueHelp>
+                <constraint>
+                  <regex>[a-fA-F0-9]{20,2000}</regex>
+                </constraint>
+                <constraintErrorMessage>Key name must in hex be alphanumerical only (min. 20 hex characters)</constraintErrorMessage>
+              </properties>
+            </leafNode>
+            <leafNode name="otp-length">
+              <properties>
+                <help>Optional. Number of digits in OTP code. Default 6</help>
+                <valueHelp>
+                  <format>u32:6-8</format>
+                  <description>Number of digits in OTP code. Default 6</description>
+                </valueHelp>
+                <constraint>
+                  <validator name="numeric" argument="--range 6-8"/>
+                </constraint>
+                <constraintErrorMessage>Number of digits in OTP code must be between 6 and 8</constraintErrorMessage>
+              </properties>
+            </leafNode>
+          </children>
+        </node>
+
+
 https://cryptography.io/en/latest/hazmat/primitives/twofactor/#two-factor-authentication
 
 set vpn openconnect authentication local-users username tst4 token-type <hotp-time>
-        <help> Token type. Time tokens by default. Possible types are: </help>
+        <help> Optional. Token type. Time tokens by default. Possible types are: </help>
         <help> hotp-time type. Time tokens </help>
         <help> hotp-event type. Event tokens </help>
 
