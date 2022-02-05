@@ -11,6 +11,7 @@ Possible completions:
    key          Token Key Secret key for the token algorithm (see RFC 4226)
    otp-length   Optional. Number of digits in OTP. Default 6
    pin          Optional. User may have an arbitrary length PIN. PIN is not required by default
+   interval     Optional. Time tokens interval in seconds (for time tokens). Default 30
    time-offset  Optional. Relative time period offset adjustment (for time tokens). Default 0
    token-type   Optional. Token type. Time tokens by default
 
