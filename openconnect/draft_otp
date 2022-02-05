@@ -62,16 +62,16 @@ set vpn openconnect authentication local-users username tst4 otp otp-length <6>
 
 https://cryptography.io/en/latest/hazmat/primitives/twofactor/#two-factor-authentication
 
-set vpn openconnect authentication local-users username tst4 token-type <hotp-time>
+set vpn openconnect authentication local-users username tst4 otp token-type <hotp-time>
         <help> Optional. Token type. Time tokens by default. Possible types are: </help>
         <help> hotp-time type. Time tokens </help>
         <help> hotp-event type. Event tokens </help>
 
-set vpn openconnect authentication local-users username tst4 pin <1234>
+set vpn openconnect authentication local-users username tst4 otp pin <1234>
         <help> Optional. User may have an arbitrary length PIN. Default no PIN required</help>
-set vpn openconnect authentication local-users username tst4 init-cnt <3>
+set vpn openconnect authentication local-users username tst4 otp init-cnt <3>
         <help> Optional. Initial counter value (for event tokens). Default 0 </help>
-set vpn openconnect authentication local-users username tst4 time-offset <60>
+set vpn openconnect authentication local-users username tst4 otp time-offset <60>
         <help> Optional. Relative time period offset adjustment (for time tokens). Default 0 </help>
 
 ######## OP MODE ###########
