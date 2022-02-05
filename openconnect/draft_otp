@@ -5,13 +5,11 @@ Possible completions:
    local-otp    Use local username/password + one time password (OTP) autentication
    radius       Use RADIUS server for user autentication
 
-vyos@vyos:~# set vpn openconnect authentication local-users username tst4 
+vyos@vyos:~# set vpn openconnect authentication local-users username tst4 otp 
 Possible completions:
-   disable      Disable instance
    init-cnt     Optional. Initial counter value (for event tokens). Default 0
    key          Token Key Secret key for the token algorithm (see RFC 4226)
    otp-length   Optional. Number of digits in OTP. Default 6
-   password     Password used for authentication
    pin          Optional. User may have an arbitrary length PIN. PIN is not required by default
    time-offset  Optional. Relative time period offset adjustment (for time tokens). Default 0
    token-type   Optional. Token type. Time tokens by default
