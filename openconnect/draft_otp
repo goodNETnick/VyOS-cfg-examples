@@ -3,7 +3,14 @@ vyos@vyos# set vpn openconnect authentication mode
 Possible completions:
    local        Use local username/password configuration
    local-otp    Use local username/password + one time password (OTP) autentication
+   otp          Use only one time password (OTP) autentication
    radius       Use RADIUS server for user autentication
+
+vyos@vyos# set vpn openconnect authentication mode local 
+ <CR>
+ otp
+ 
+
 
 vyos@vyos:~# set vpn openconnect authentication local-users username tst4 otp 
 Possible completions:
