@@ -1,0 +1,35 @@
+set interfaces ethernet eth0 address 10.0.0.1/24
+set protocols isis interface eth0 circuit-type 'level-2-only'
+set protocols isis level 'level-2'
+set protocols isis log-adjacency-changes
+set protocols isis net '49.0000.0000.0000.0000.0001.00'
+
+
+set interfaces ethernet eth0 address 10.0.0.2/24
+set protocols isis interface eth0 circuit-type 'level-2-only'
+set protocols isis level 'level-2'
+set protocols isis log-adjacency-changes
+set protocols isis net '49.0000.0000.0000.0000.0002.00'
+
+
+interface Ethernet0/0
+ no switchport
+ ip addr 10.0.0.3 255.255.255.0
+ ip router isis 1
+!
+!
+router isis 1
+ net 49.0000.0000.0000.0000.0003.00
+ is-type level-2-only
+
+
+interface Ethernet0/0
+ no switchport
+ ip addr 10.0.0.4 255.255.255.0
+ ip router isis 1
+!
+!
+router isis 1
+ net 49.0000.0000.0000.0000.0004.00
+ is-type level-2-only
+
