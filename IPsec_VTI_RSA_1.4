@@ -1,0 +1,73 @@
+run generate pki key-pair install LEFT
+Enter private key type: [rsa, dsa, ec] (Default: rsa)
+Enter private key bits: (Default: 2048)
+Note: If you plan to use the generated key on this router, do not encrypt the private key.
+Do you want to encrypt the private key with a passphrase? [y/N] N
+Do you want to install the public key? [Y/n] Y
+Do you want to install the private key? [Y/n] Y
+2 value(s) installed. Use "compare" to see the pending changes, and "commit" to apply.
+[edit]
+
+
+
+vyos@vyos# run generate pki key-pair install RIGHT
+Enter private key type: [rsa, dsa, ec] (Default: rsa)
+Enter private key bits: (Default: 2048)
+Note: If you plan to use the generated key on this router, do not encrypt the private key.
+Do you want to encrypt the private key with a passphrase? [y/N] N
+Do you want to install the public key? [Y/n] Y
+Do you want to install the private key? [Y/n] Y
+2 value(s) installed. Use "compare" to see the pending changes, and "commit" to apply.
+[edit]
+
+
+
+set pki key-pair LEFT public key 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZlVTKEzw6kdDgG7M2WWkFJUUSGfDirJ1b2TIRJRVNOmH66N9MkzfV8Dt+xoZJLTXgUS5jjZaMZ05a7cLZFLq5+fTHtFRz1y/NFyZ94P7jV1IpWd85muoHA78EbiZRzIGIfSQ22DnxMJ+99dD9X/TuIq/doqedk+0LvRNktwoN2zqItRMnDT0HvAgw1vByrdM6056pZn7ccgYuHbx9oBE9QpvyrvMVKHSOC0szNg4Z/fOYvi8ipCzTcQmk+XYPS8IBsIVcetdzNRo/E9H8bY5FiEfYXvcbmJvtRu4ggTwJKhR8z28gdpR5BK+phZwKCcC1Xs62uEptNd13GwPr8RZwIDAQAB'
+
+set pki key-pair RIGHT public key 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuHMNH13Hrvt00Wwl8hfzmW9MS3pYBmaP/jOZYfWEoO2AumW3azhJD6xKK/PygehSbbzZrR4UyiMVt6z9Bgpl/vKI0VLX4Jw1OArvw682sCwpO05ce9xxEy01Gbf6GxwBYLwWJ1cXN6O7Pl321wicoABaWpxMCNHu0u13ZBUsIovePJqNOtLtXKmksJI97Pgg36vws/iqq1GPUJk7JfRm4JeGkGOwPN3ONhceqh6bQz0NseBwcBY0sYeR51iCESI0FDDbFYM3t8a9utbbxggkdWBj0CllQbU9eULU6Y2Wo+847ffYkKjlRtPwVgaKG/hVmWip9iNzm/OE9ZLE8Gr1kQIDAQAB'
+
+
+
+
+vyos@vyos1#
+
+set vpn ipsec interface 'eth0'
+set interfaces vti vti0 address '10.0.0.1/30'
+set vpn ipsec esp-group MyESPGroup proposal 1 encryption 'aes128'
+set vpn ipsec esp-group MyESPGroup proposal 1 hash 'sha1'
+set vpn ipsec ike-group MyIKEGroup proposal 1 dh-group '2'
+set vpn ipsec ike-group MyIKEGroup proposal 1 encryption 'aes128'
+set vpn ipsec ike-group MyIKEGroup proposal 1 hash 'sha1'
+set vpn ipsec site-to-site peer @RIGHT authentication id 'LEFT'
+set vpn ipsec site-to-site peer @RIGHT authentication mode 'rsa'
+set vpn ipsec site-to-site peer @RIGHT authentication remote-id 'RIGHT'
+set vpn ipsec site-to-site peer @RIGHT authentication rsa local-key 'LEFT'
+set vpn ipsec site-to-site peer @RIGHT authentication rsa remote-key 'RIGHT'
+set vpn ipsec site-to-site peer @RIGHT connection-type 'respond'
+set vpn ipsec site-to-site peer @RIGHT default-esp-group 'MyESPGroup'
+set vpn ipsec site-to-site peer @RIGHT ike-group 'MyIKEGroup'
+set vpn ipsec site-to-site peer @RIGHT local-address '131.232.72.1'
+set vpn ipsec site-to-site peer @RIGHT vti bind 'vti0'
+set vpn ipsec site-to-site peer @RIGHT vti esp-group 'MyESPGroup'
+
+vyos@vyos2#
+set vpn ipsec interface 'eth0'
+set interfaces vti vti0 address '10.0.0.2/30'
+set vpn ipsec esp-group MyESPGroup proposal 1 encryption 'aes128'
+set vpn ipsec esp-group MyESPGroup proposal 1 hash 'sha1'
+set vpn ipsec ike-group MyIKEGroup proposal 1 dh-group '2'
+set vpn ipsec ike-group MyIKEGroup proposal 1 encryption 'aes128'
+set vpn ipsec ike-group MyIKEGroup proposal 1 hash 'sha1'
+set vpn ipsec site-to-site peer 131.232.72.1 authentication id 'RIGHT'
+set vpn ipsec site-to-site peer 131.232.72.1 authentication mode 'rsa'
+set vpn ipsec site-to-site peer 131.232.72.1 authentication remote-id 'LEFT'
+set vpn ipsec site-to-site peer 131.232.72.1 authentication rsa local-key 'RIGHT'
+set vpn ipsec site-to-site peer 131.232.72.1 authentication rsa remote-key 'LEFT'
+set vpn ipsec site-to-site peer 131.232.72.1 connection-type 'initiate'
+set vpn ipsec site-to-site peer 131.232.72.1 default-esp-group 'MyESPGroup'
+set vpn ipsec site-to-site peer 131.232.72.1 ike-group 'MyIKEGroup'
+set vpn ipsec site-to-site peer 131.232.72.1 local-address '131.232.56.195'
+set vpn ipsec site-to-site peer 131.232.72.1 vti bind 'vti0'
+set vpn ipsec site-to-site peer 131.232.72.1 vti esp-group 'MyESPGroup'
+
+
